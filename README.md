@@ -16,7 +16,8 @@ Users should be able to:
 
 ### Screenshot
 
-![layout](https://user-images.githubusercontent.com/72691985/146640806-b29db9fa-7e68-482a-97f0-df30fe57de27.png)
+![localhost_3000_ (4)](https://user-images.githubusercontent.com/72691985/146640874-9fa90516-f82a-4309-9d5f-4b7a71bd1a89.png)
+
 
 ### Links
 
