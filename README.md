@@ -16,6 +16,9 @@ Users should be able to:
 
 ### Screenshot
 
+![localhost_3000_ (4)](https://user-images.githubusercontent.com/72691985/146640874-9fa90516-f82a-4309-9d5f-4b7a71bd1a89.png)
+
+
 ### Links
 
 - Solution URL: [github.com](https://github.com/mlatka9/Pomodoro-app)
@@ -38,5 +41,5 @@ Users should be able to:
 
 ## Author
 
-- Github - [mlatka9](hhttps://github.com/mlatka9)
+- Github - [mlatka9](https://github.com/mlatka9)
 - Frontend Mentor - [@mlatka9](https://www.frontendmentor.io/profile/mlatka9)
