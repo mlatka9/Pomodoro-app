@@ -22,6 +22,7 @@ export const Wrapper = styled.div`
     font-weight: bold;
     color: ${({ theme }) => theme.colors.grey};
     margin-bottom: 40px;
+    text-align: center;
   }
 `;
 
