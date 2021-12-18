@@ -1,4 +1,5 @@
 import { Wrapper, SwitchOption } from './SwitchBar.styles';
+import PropTypes from 'prop-types';
 
 const SwitchBar = ({ mode, handleChangeMode }) => {
   return (
@@ -14,6 +15,11 @@ const SwitchBar = ({ mode, handleChangeMode }) => {
       </SwitchOption>
     </Wrapper>
   );
+};
+
+SwitchBar.propTypes = {
+  mode: PropTypes.oneOf(['pomodoro', 'shortBreak', 'longBreak']),
+  handleChangeMode: PropTypes.func.isRequired,
 };
 
 export default SwitchBar;

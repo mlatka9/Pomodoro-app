@@ -12,6 +12,9 @@ import {
   ModalBackground,
 } from './SettingsModal.styles';
 import { setItemInLocalStorage } from 'helpers';
+import PropTypes from 'prop-types';
+import { SettingsType } from 'types';
+import React from 'react';
 
 const reducer = (settings, action) => {
   switch (action.type) {
@@ -37,8 +40,10 @@ const SettingsModal = ({ setIsSettingsOpen, globalSettings, setGlobalSettings })
     dispach({ type: 'changeColorTheme', payload: newColorTheme });
   };
 
-  const setNewTimerBase = (timerName, newTimerBase) => {
-    dispach({ type: 'changeTimerBase', payload: { name: timerName, time: newTimerBase } });
+  const setNewTimerBase = (timerName) => {
+    return (newTimerBase) => {
+      dispach({ type: 'changeTimerBase', payload: { name: timerName, time: newTimerBase } });
+    };
   };
 
   const handleApplySettings = () => {
@@ -66,19 +71,15 @@ const SettingsModal = ({ setIsSettingsOpen, globalSettings, setGlobalSettings })
             <div>
               <div>
                 <span>pomodoro</span>
-                <InputNumber setNewTimerBase={setNewTimerBase} name="pomodoro" value={settings.timerBase.pomodoro} />
+                <InputNumber setNewTimerBase={setNewTimerBase('pomodoro')} value={settings.timerBase.pomodoro} />
               </div>
               <div>
                 <span>short break</span>
-                <InputNumber
-                  setNewTimerBase={setNewTimerBase}
-                  name="shortBreak"
-                  value={settings.timerBase.shortBreak}
-                />
+                <InputNumber setNewTimerBase={setNewTimerBase('shortBreak')} value={settings.timerBase.shortBreak} />
               </div>
               <div>
                 <span>long break</span>
-                <InputNumber setNewTimerBase={setNewTimerBase} name="longBreak" value={settings.timerBase.longBreak} />
+                <InputNumber setNewTimerBase={setNewTimerBase('longBreak')} value={settings.timerBase.longBreak} />
               </div>
             </div>
           </div>
@@ -134,6 +135,12 @@ const SettingsModal = ({ setIsSettingsOpen, globalSettings, setGlobalSettings })
       <ModalBackground onClick={closeSettingsModal}></ModalBackground>
     </>
   );
+};
+
+SettingsModal.propTypes = {
+  globalSettings: PropTypes.shape(SettingsType).isRequired,
+  setIsSettingsOpen: PropTypes.func.isRequired,
+  setGlobalSettings: PropTypes.func.isRequired,
 };
 
 export default SettingsModal;

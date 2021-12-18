@@ -1,22 +1,10 @@
-import styled from 'styled-components';
-
-const Circle = styled.path`
-  fill: none;
-  stroke-width: 1;
-  ${({ isFinish }) => !isFinish && 'stroke-linecap: round;'}
-  stroke: ${({ theme }) => theme.colors.red};
-  transition: stroke-dasharray 1s linear;
-`;
-export const SvgWrapper = styled.svg`
-  display: block;
-  height: calc(100% - 18px * 2);
-  width: calc(100% - 18px * 2);
-`;
+import { StyledCircle, SvgWrapper } from './ProgressBar.styles';
+import PropTypes from 'prop-types';
 
 const ProgressBar = ({ progress = 100 }) => {
   return (
     <SvgWrapper viewBox="0 0 36 36">
-      <Circle
+      <StyledCircle
         isFinish={progress === 0}
         strokeDasharray={`${progress}, 100`}
         d="M18 2.0845
@@ -25,6 +13,10 @@ const ProgressBar = ({ progress = 100 }) => {
       />
     </SvgWrapper>
   );
+};
+
+ProgressBar.propTypes = {
+  progress: PropTypes.number,
 };
 
 export default ProgressBar;

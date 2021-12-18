@@ -10,6 +10,18 @@ export const Wrapper = styled.div`
     font-weight: bold;
     color: ${({ theme }) => theme.colors.grey};
     margin: 50px 0;
+    @media (max-width: 600px) {
+      margin: 30px 0;
+    }
+  }
+  h2 {
+    font-family: ${({ theme }) => theme.fonts.mainFont};
+    font-size: 16px;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    font-weight: bold;
+    color: ${({ theme }) => theme.colors.grey};
+    margin-bottom: 40px;
   }
 `;
 
@@ -97,7 +109,7 @@ const StyledButton = styled.button`
 
 export const ResetButton = styled(StyledButton)`
   position: absolute;
-  top: 66%;
+  top: ${({ isFinished }) => (isFinished ? '57%' : '66%')};
   font-size: ${({ isFinished }) => (isFinished ? '18px' : '12px')};
   opacity: ${({ isFinished }) => (isFinished ? '1' : '0.8')};
   letter-spacing: ${({ isFinished }) => (isFinished ? '15px' : '10px')};

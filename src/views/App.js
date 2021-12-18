@@ -15,7 +15,6 @@ const defaultSettings = {
   font: 'Kumbh Sans',
   colorTheme: 'red',
 };
-
 const initialSettings = getItemFromLocalStorage('settings') || defaultSettings;
 
 function App() {

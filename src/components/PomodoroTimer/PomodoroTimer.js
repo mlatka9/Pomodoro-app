@@ -11,16 +11,12 @@ import {
 import SwitchBar from 'components/SwitchBar/SwitchBar';
 import ProgressBar from 'components/PorgressBar/ProgressBar';
 import SettingsIcon from 'assets/images/settings-icon.svg';
+import RingSound from 'assets/sounds/ring-sound.wav';
+import { getItemFromLocalStorage, setItemInLocalStorage, formatTimer, formatTimerHourBase } from 'helpers';
+import PropTypes from 'prop-types';
+import { SettingsType } from 'types';
 
-const formatTimer = (leftSeconds) => {
-  const seconds = leftSeconds % 60;
-  const minutes = Math.floor(leftSeconds / 60);
-  const minutesString = minutes > 9 ? minutes : `0${minutes}`;
-  const secondsString = seconds > 9 ? seconds : `0${seconds}`;
-  return `${minutesString}:${secondsString}`;
-};
-
-const calculatePorgress = (leftTime, allTime) => (leftTime / allTime) * 100;
+const calculatePercentagePorgress = (leftTime, allTime) => (leftTime / allTime) * 100;
 
 const PomodoroTimer = ({ setIsSettingsOpen, globalSettings }) => {
   const [mode, setMode] = useState('pomodoro');
@@ -29,29 +25,20 @@ const PomodoroTimer = ({ setIsSettingsOpen, globalSettings }) => {
   let intervalId = useRef();
   const [isCounting, setIsCounting] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
+  const [studiedToday, setStudiedToday] = useState({ time: 0, date: new Date().toDateString() });
 
-  const toggleTimer = () => {
-    setIsCounting(!isCounting);
-    setIsStarted(true);
-  };
-
-  const resetTimer = () => {
-    setIsCounting(false);
-    setTimer(baseTimeInSeconds);
-    setIsStarted(false);
-  };
+  useEffect(() => {
+    const storedData = getItemFromLocalStorage('studiedToday');
+    if (storedData && storedData.date === new Date().toDateString()) {
+      setStudiedToday(storedData);
+    }
+  }, []);
 
   useEffect(() => {
     setTimer(baseTimeInSeconds);
     setIsCounting(false);
     setIsStarted(false);
   }, [mode, baseTimeInSeconds]);
-
-  useEffect(() => {
-    if (timer === 0) {
-      setIsCounting(false);
-    }
-  }, [timer]);
 
   useEffect(() => {
     if (isCounting) {
@@ -66,40 +53,68 @@ const PomodoroTimer = ({ setIsSettingsOpen, globalSettings }) => {
     };
   }, [isCounting]);
 
-  const handleChangeMode = (mode) => {
-    setMode(mode);
-  };
+  useEffect(() => {
+    setItemInLocalStorage('studiedToday', studiedToday);
+  }, [studiedToday]);
 
   useEffect(() => {
+    const updateTimeStudiedToday = (bonusTime) => {
+      if (new Date().toDateString() === studiedToday.date) {
+        setStudiedToday((prev) => ({ ...prev, time: prev.time + bonusTime }));
+      } else {
+        setStudiedToday(() => ({ time: bonusTime, date: new Date().toDateString() }));
+      }
+    };
+
     if (isStarted) {
       if (timer === 0) {
         document.title = 'Session end';
+        const audio = new Audio(RingSound);
+        audio.play();
+        setIsCounting(false);
+        updateTimeStudiedToday(baseTimeInSeconds);
       } else {
         document.title = formatTimer(timer);
       }
     } else {
       document.title = 'Pomodoro';
     }
-  }, [isStarted, timer]);
+  }, [isStarted, timer, baseTimeInSeconds, studiedToday.date]);
+
+  const toggleTimer = () => {
+    setIsCounting(!isCounting);
+    setIsStarted(true);
+  };
+
+  const resetTimer = () => {
+    setIsCounting(false);
+    setTimer(baseTimeInSeconds);
+    setIsStarted(false);
+  };
+
+  const handleChangeMode = (mode) => {
+    setMode(mode);
+  };
 
   const isFinished = timer === 0;
 
   return (
     <Wrapper>
       <h1>pomodoro</h1>
+      <h2>Today You studied for {formatTimerHourBase(studiedToday.time)}</h2>
       <SwitchBar mode={mode} handleChangeMode={handleChangeMode} />
       <TimerWrapper>
         <TimerBorder>
           <TimerInner>
             <span>{formatTimer(timer)}</span>
-            {!isFinished ? (
+            {isFinished ? null : (
               <ToggleButton onClick={toggleTimer}>
                 {(() => {
                   if (!isStarted) return 'start';
                   else return isCounting ? 'pause' : 'resume';
                 })()}
               </ToggleButton>
-            ) : null}
+            )}
             {(!isCounting && isStarted) || isFinished ? (
               <ResetButton isFinished={isFinished} onClick={resetTimer}>
                 Reset
@@ -107,7 +122,7 @@ const PomodoroTimer = ({ setIsSettingsOpen, globalSettings }) => {
             ) : null}
           </TimerInner>
         </TimerBorder>
-        <ProgressBar progress={calculatePorgress(timer, baseTimeInSeconds)} />
+        <ProgressBar progress={calculatePercentagePorgress(timer, baseTimeInSeconds)} />
       </TimerWrapper>
 
       <SettingsButton onClick={() => setIsSettingsOpen(true)}>
@@ -115,6 +130,11 @@ const PomodoroTimer = ({ setIsSettingsOpen, globalSettings }) => {
       </SettingsButton>
     </Wrapper>
   );
+};
+
+PomodoroTimer.propTypes = {
+  globalSettings: PropTypes.shape(SettingsType).isRequired,
+  setIsSettingsOpen: PropTypes.func.isRequired,
 };
 
 export default PomodoroTimer;
