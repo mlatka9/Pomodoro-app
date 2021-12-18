@@ -1,7 +1,8 @@
 import { StyledCircle, SvgWrapper } from './ProgressBar.styles';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-const ProgressBar = ({ progress = 100 }) => {
+const ProgressBar = React.memo(({ progress = 100 }) => {
   return (
     <SvgWrapper viewBox="0 0 36 36">
       <StyledCircle
@@ -13,7 +14,7 @@ const ProgressBar = ({ progress = 100 }) => {
       />
     </SvgWrapper>
   );
-};
+});
 
 ProgressBar.propTypes = {
   progress: PropTypes.number,

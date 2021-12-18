@@ -1,7 +1,9 @@
 import { Wrapper, SwitchOption } from './SwitchBar.styles';
-import PropTypes from 'prop-types';
+import useMode from 'hooks/useMode';
+import React from 'react';
 
-const SwitchBar = ({ mode, handleChangeMode }) => {
+const SwitchBar = React.memo(() => {
+  const { mode, handleChangeMode } = useMode();
   return (
     <Wrapper mode={mode}>
       <SwitchOption isSelectedMode={mode === 'pomodoro'} onClick={() => handleChangeMode('pomodoro')}>
@@ -15,11 +17,6 @@ const SwitchBar = ({ mode, handleChangeMode }) => {
       </SwitchOption>
     </Wrapper>
   );
-};
-
-SwitchBar.propTypes = {
-  mode: PropTypes.oneOf(['pomodoro', 'shortBreak', 'longBreak']),
-  handleChangeMode: PropTypes.func.isRequired,
-};
+});
 
 export default SwitchBar;

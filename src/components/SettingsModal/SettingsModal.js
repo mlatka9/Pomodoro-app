@@ -12,9 +12,7 @@ import {
   ModalBackground,
 } from './SettingsModal.styles';
 import { setItemInLocalStorage } from 'helpers';
-import PropTypes from 'prop-types';
-import { SettingsType } from 'types';
-import React from 'react';
+import useGlobalSettings from 'hooks/useGlobalSettings';
 
 const reducer = (settings, action) => {
   switch (action.type) {
@@ -29,7 +27,9 @@ const reducer = (settings, action) => {
   }
 };
 
-const SettingsModal = ({ setIsSettingsOpen, globalSettings, setGlobalSettings }) => {
+const SettingsModal = () => {
+  console.log('SettingsModal');
+  const { globalSettings, setGlobalSettings, setIsSettingsOpen } = useGlobalSettings();
   const [settings, dispach] = useReducer(reducer, globalSettings);
 
   const setNewFont = (newFont) => {
@@ -135,12 +135,6 @@ const SettingsModal = ({ setIsSettingsOpen, globalSettings, setGlobalSettings })
       <ModalBackground onClick={closeSettingsModal}></ModalBackground>
     </>
   );
-};
-
-SettingsModal.propTypes = {
-  globalSettings: PropTypes.shape(SettingsType).isRequired,
-  setIsSettingsOpen: PropTypes.func.isRequired,
-  setGlobalSettings: PropTypes.func.isRequired,
 };
 
 export default SettingsModal;
