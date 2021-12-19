@@ -3,7 +3,7 @@ import { getItemFromLocalStorage } from 'helpers';
 
 const defaultSettings = {
   timerBase: {
-    pomodoro: 30,
+    pomodoro: 20,
     shortBreak: 5,
     longBreak: 15,
   },

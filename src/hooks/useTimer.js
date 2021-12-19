@@ -7,23 +7,26 @@ import useTimeStudiedToday from './useStudiedToday';
 
 const TimerContext = React.createContext();
 
+const calculatePercentagePorgress = (leftTime, allTime) => {
+  return (leftTime / allTime) * 100;
+};
+
 export const TimerProvider = ({ children }) => {
   const { globalSettings } = useGlobalSettings();
   const { mode } = useMode();
-  const { updateTimeStudiedToday, studiedTodayCounter } = useTimeStudiedToday();
-  const baseTimeInSeconds = mode === 'freeLearning' ? 0 : globalSettings.timerBase[mode] * 60;
-
+  const { updateTimeStudiedToday } = useTimeStudiedToday();
+  const baseTime = mode === 'freeLearning' ? 0 : globalSettings.timerBase[mode] * 60;
   const [timerState, setTimerState] = useState('idle');
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(baseTime);
   let intervalId = useRef();
 
   const decrementTimer = () => setTimer((timer) => timer - 1);
   const incrementTimer = () => setTimer((timer) => timer + 1);
 
   useEffect(() => {
-    setTimer(baseTimeInSeconds);
+    setTimer(baseTime);
     setTimerState('idle');
-  }, [mode, baseTimeInSeconds]);
+  }, [mode, baseTime]);
 
   useEffect(() => {
     if (timerState === 'counting') {
@@ -44,7 +47,7 @@ export const TimerProvider = ({ children }) => {
 
   useEffect(() => {
     if (timerState === 'idle') {
-      setTimer(baseTimeInSeconds);
+      setTimer(baseTime);
       document.title = 'Pomodoro';
     } else if (timerState === 'counting') {
       document.title = formatTimer(timer);
@@ -54,11 +57,11 @@ export const TimerProvider = ({ children }) => {
         setTimerState('finished');
         document.title = 'Session end';
         if (mode === 'pomodoro') {
-          updateTimeStudiedToday(baseTimeInSeconds);
+          updateTimeStudiedToday(baseTime);
         }
       }
     }
-  }, [timer, studiedTodayCounter.date, timerState, mode, baseTimeInSeconds, updateTimeStudiedToday]);
+  }, [timer, timerState, mode, baseTime, updateTimeStudiedToday]);
 
   const handleToggleTimer = () => {
     if (timerState === 'idle' || timerState === 'paused') {
@@ -77,13 +80,15 @@ export const TimerProvider = ({ children }) => {
     setTimerState('idle');
   };
 
+  const sessionPassedPercentage = mode === 'freeLearning' ? 100 : calculatePercentagePorgress(timer, baseTime);
+
   const values = {
     timerState,
     timer,
     handleToggleTimer,
     handleResetTimer,
     handleEndSession,
-    baseTimeInSeconds,
+    sessionPassedPercentage,
   };
   return <TimerContext.Provider value={values}>{children}</TimerContext.Provider>;
 };
