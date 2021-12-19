@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-  width: 375px;
+  width: 480px;
   height: 63px;
   display: flex;
   border-radius: 32px;
@@ -10,26 +10,35 @@ export const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.black};
   z-index: 0;
   z-index: 100;
+  @media (max-width: 600px) {
+    width: 410px;
+  }
   &::after {
     content: '';
     display: block;
     position: absolute;
     height: 47px;
-    width: 120px;
+    width: 116px;
     background-color: ${({ theme }) => theme.colors.red};
     z-index: -10;
     border-radius: 26px;
     transition: transform 200ms ease-in-out;
     transform: translateX(
       ${({ mode }) => {
-        if (mode === 'shortBreak') {
+        if (mode === 'freeLearning') {
           return '100%';
         }
-        if (mode === 'longBreak') {
+        if (mode === 'shortBreak') {
           return '200%';
+        }
+        if (mode === 'longBreak') {
+          return '300%';
         }
       }}
     );
+    @media (max-width: 600px) {
+      width: 98px;
+    }
   }
 `;
 

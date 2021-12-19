@@ -1,37 +1,37 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import useGlobalSettings from './useGlobalSettings';
 import RingSound from 'assets/sounds/ring-sound.wav';
-import { getItemFromLocalStorage, setItemInLocalStorage, formatTimer } from 'helpers';
+import { formatTimer } from 'helpers';
 import useMode from './useMode';
+import useTimeStudiedToday from './useStudiedToday';
 
 const TimerContext = React.createContext();
 
 export const TimerProvider = ({ children }) => {
   const { globalSettings } = useGlobalSettings();
   const { mode } = useMode();
-  const baseTimeInSeconds = globalSettings.timerBase[mode] * 60;
-  const [timer, setTimer] = useState(baseTimeInSeconds);
-  let intervalId = useRef();
-  const [isCounting, setIsCounting] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
-  const [studiedToday, setStudiedToday] = useState({ time: 0, date: new Date().toDateString() });
+  const { updateTimeStudiedToday, studiedTodayCounter } = useTimeStudiedToday();
+  const baseTimeInSeconds = mode === 'freeLearning' ? 0 : globalSettings.timerBase[mode] * 60;
 
-  useEffect(() => {
-    const storedData = getItemFromLocalStorage('studiedToday');
-    if (storedData && storedData.date === new Date().toDateString()) {
-      setStudiedToday(storedData);
-    }
-  }, []);
+  const [timerState, setTimerState] = useState('idle');
+  const [timer, setTimer] = useState(0);
+  let intervalId = useRef();
+
+  const decrementTimer = () => setTimer((timer) => timer - 1);
+  const incrementTimer = () => setTimer((timer) => timer + 1);
 
   useEffect(() => {
     setTimer(baseTimeInSeconds);
-    setIsCounting(false);
-    setIsStarted(false);
+    setTimerState('idle');
   }, [mode, baseTimeInSeconds]);
 
   useEffect(() => {
-    if (isCounting) {
-      intervalId.current = setInterval(() => setTimer((time) => time - 1), 1000);
+    if (timerState === 'counting') {
+      if (mode === 'freeLearning') {
+        intervalId.current = setInterval(incrementTimer, 1000);
+      } else {
+        intervalId.current = setInterval(decrementTimer, 1000);
+      }
     } else {
       if (intervalId.current) {
         clearInterval(intervalId.current);
@@ -40,62 +40,52 @@ export const TimerProvider = ({ children }) => {
     return () => {
       clearInterval(intervalId.current);
     };
-  }, [isCounting]);
+  }, [timerState, mode]);
 
   useEffect(() => {
-    setItemInLocalStorage('studiedToday', studiedToday);
-  }, [studiedToday]);
-
-  useEffect(() => {
-    const updateTimeStudiedToday = (bonusTime) => {
-      if (new Date().toDateString() === studiedToday.date) {
-        setStudiedToday((prev) => ({ ...prev, time: prev.time + bonusTime }));
-      } else {
-        setStudiedToday(() => ({ time: bonusTime, date: new Date().toDateString() }));
-      }
-    };
-
-    if (isStarted) {
-      if (timer === 0) {
-        document.title = 'Session end';
+    if (timerState === 'idle') {
+      setTimer(baseTimeInSeconds);
+      document.title = 'Pomodoro';
+    } else if (timerState === 'counting') {
+      document.title = formatTimer(timer);
+      if (timer === 0 && mode !== 'freeLearning') {
         const audio = new Audio(RingSound);
         audio.play();
-        setIsCounting(false);
-        updateTimeStudiedToday(baseTimeInSeconds);
-      } else {
-        document.title = formatTimer(timer);
+        setTimerState('finished');
+        document.title = 'Session end';
+        if (mode === 'pomodoro') {
+          updateTimeStudiedToday(baseTimeInSeconds);
+        }
       }
-    } else {
-      document.title = 'Pomodoro';
     }
-  }, [isStarted, timer, baseTimeInSeconds, studiedToday.date]);
+  }, [timer, studiedTodayCounter.date, timerState, mode, baseTimeInSeconds, updateTimeStudiedToday]);
 
-  const toggleTimer = () => {
-    setIsCounting(!isCounting);
-    setIsStarted(true);
+  const handleToggleTimer = () => {
+    if (timerState === 'idle' || timerState === 'paused') {
+      setTimerState('counting');
+    } else {
+      setTimerState('paused');
+    }
   };
 
-  const resetTimer = () => {
-    setIsCounting(false);
-    setTimer(baseTimeInSeconds);
-    setIsStarted(false);
+  const handleEndSession = () => {
+    updateTimeStudiedToday(timer);
+    setTimerState('idle');
   };
 
-  return (
-    <TimerContext.Provider
-      value={{
-        timer,
-        studiedToday,
-        toggleTimer,
-        isStarted,
-        isCounting,
-        resetTimer,
-        baseTimeInSeconds,
-      }}
-    >
-      {children}
-    </TimerContext.Provider>
-  );
+  const handleResetTimer = () => {
+    setTimerState('idle');
+  };
+
+  const values = {
+    timerState,
+    timer,
+    handleToggleTimer,
+    handleResetTimer,
+    handleEndSession,
+    baseTimeInSeconds,
+  };
+  return <TimerContext.Provider value={values}>{children}</TimerContext.Provider>;
 };
 
 const useTimer = () => {

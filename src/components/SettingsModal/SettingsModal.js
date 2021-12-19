@@ -28,7 +28,6 @@ const reducer = (settings, action) => {
 };
 
 const SettingsModal = () => {
-  console.log('SettingsModal');
   const { globalSettings, setGlobalSettings, setIsSettingsOpen } = useGlobalSettings();
   const [settings, dispach] = useReducer(reducer, globalSettings);
 

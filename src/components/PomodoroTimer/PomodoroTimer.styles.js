@@ -93,30 +93,28 @@ export const TimerInner = styled.div`
       font-size: 70px;
     }
   }
-`;
-
-const StyledButton = styled.button`
-  letter-spacing: 15px;
-  border: none;
-  background-color: transparent;
-  color: white;
-  text-transform: uppercase;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 10;
-  margin-top: 20px;
-  margin-left: 10px;
-`;
-
-export const ResetButton = styled(StyledButton)`
-  position: absolute;
-  top: ${({ isFinished }) => (isFinished ? '57%' : '66%')};
-  font-size: ${({ isFinished }) => (isFinished ? '18px' : '12px')};
-  opacity: ${({ isFinished }) => (isFinished ? '1' : '0.8')};
-  letter-spacing: ${({ isFinished }) => (isFinished ? '15px' : '10px')};
-`;
-export const ToggleButton = styled(StyledButton)`
-  font-size: 18px;
-  position: absolute;
-  top: 57%;
+  button {
+    letter-spacing: 15px;
+    border: none;
+    background-color: transparent;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+    margin-top: 20px;
+    margin-left: 10px;
+  }
+  button:nth-of-type(1) {
+    font-size: 15px;
+    position: absolute;
+    top: 57%;
+  }
+  button:nth-of-type(2) {
+    position: absolute;
+    top: 66%;
+    font-size: 12px;
+    opacity: 0.8;
+    letter-spacing: 10px;
+  }
 `;

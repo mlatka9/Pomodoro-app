@@ -9,6 +9,9 @@ const SwitchBar = React.memo(() => {
       <SwitchOption isSelectedMode={mode === 'pomodoro'} onClick={() => handleChangeMode('pomodoro')}>
         pomodoro
       </SwitchOption>
+      <SwitchOption isSelectedMode={mode === 'freeLearning'} onClick={() => handleChangeMode('freeLearning')}>
+        Free learning
+      </SwitchOption>
       <SwitchOption isSelectedMode={mode === 'shortBreak'} onClick={() => handleChangeMode('shortBreak')}>
         short break
       </SwitchOption>

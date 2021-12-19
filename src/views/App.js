@@ -7,6 +7,7 @@ import useGlobalSettings from 'hooks/useGlobalSettings';
 import { TimerProvider } from 'hooks/useTimer';
 import { ModeProvider } from 'hooks/useMode';
 import React from 'react';
+import { StudiedTodayProvider } from 'hooks/useStudiedToday';
 
 const App = () => {
   const { globalSettings, isSettingsOpen } = useGlobalSettings();
@@ -17,9 +18,11 @@ const App = () => {
     <ThemeProvider theme={selectedTheme}>
       <GlobalStyle />
       <ModeProvider>
-        <TimerProvider>
-          <PomodoroTimer />
-        </TimerProvider>
+        <StudiedTodayProvider>
+          <TimerProvider>
+            <PomodoroTimer />
+          </TimerProvider>
+        </StudiedTodayProvider>
       </ModeProvider>
       {isSettingsOpen ? <SettingsModal /> : null}
     </ThemeProvider>
