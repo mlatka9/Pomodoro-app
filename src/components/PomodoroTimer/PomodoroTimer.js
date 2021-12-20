@@ -1,20 +1,21 @@
 import React from 'react';
-import { Wrapper, TimerWrapper, TimerBorder, TimerInner, SettingsButton } from './PomodoroTimer.styles';
+import { Wrapper, TimerWrapper, TimerBorder, TimerInner, SettingsButton, StatsWrapper } from './PomodoroTimer.styles';
 import SwitchBar from 'components/SwitchBar/SwitchBar';
 import ProgressBar from 'components/PorgressBar/ProgressBar';
 import SettingsIcon from 'assets/images/settings-icon.svg';
+import HistoryIcon from 'assets/images/icon-history.png';
 
 import { formatTimer, formatTimerHourBase } from 'helpers';
 import useGlobalSettings from 'hooks/useGlobalSettings';
 import useTimer from 'hooks/useTimer';
 import useMode from 'hooks/useMode';
-import useTimeStudiedToday from 'hooks/useStudiedToday';
+import useTimeStudiedToday from 'hooks/useStudyHistory';
 
 const calculatePercentagePorgress = (leftTime, allTime) => (leftTime / allTime) * 100;
 
-const PomodoroTimer = () => {
+const PomodoroTimer = ({ handleOpenHistory }) => {
   const { setIsSettingsOpen } = useGlobalSettings();
-  const { studiedTodayCounter } = useTimeStudiedToday();
+  const { timeStudiedToday } = useTimeStudiedToday();
   const { timer, timerState, handleToggleTimer, handleResetTimer, handleEndSession, baseTimeInSeconds } = useTimer();
   const { mode } = useMode();
 
@@ -27,7 +28,13 @@ const PomodoroTimer = () => {
   return (
     <Wrapper>
       <h1>pomodoro</h1>
-      <h2>Today You studied for {formatTimerHourBase(studiedTodayCounter.time)}</h2>
+      <StatsWrapper>
+        <h2>Today You studied for {formatTimerHourBase(timeStudiedToday)} </h2>
+        <button onClick={handleOpenHistory}>
+          <img src={HistoryIcon} alt="history" />
+        </button>
+      </StatsWrapper>
+
       <SwitchBar />
       <TimerWrapper>
         <TimerBorder>

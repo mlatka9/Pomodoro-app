@@ -6,11 +6,16 @@ import SettingsModal from 'components/SettingsModal/SettingsModal';
 import useGlobalSettings from 'hooks/useGlobalSettings';
 import { TimerProvider } from 'hooks/useTimer';
 import { ModeProvider } from 'hooks/useMode';
-import React from 'react';
-import { StudiedTodayProvider } from 'hooks/useStudiedToday';
+import React, { useState } from 'react';
+import { StudyHistoryProvider } from 'hooks/useStudyHistory';
+import HistoryModal from 'components/HistoryModal/HistoryModal';
 
 const App = () => {
   const { globalSettings, isSettingsOpen } = useGlobalSettings();
+  const [isHisotryOpen, setIsHisotryOpen] = useState();
+
+  const handleOpenHistory = () => setIsHisotryOpen(true);
+  const handleCloseHistory = () => setIsHisotryOpen(false);
 
   const selectedTheme = getCustomTheme(globalSettings.font, globalSettings.colorTheme);
 
@@ -18,11 +23,12 @@ const App = () => {
     <ThemeProvider theme={selectedTheme}>
       <GlobalStyle />
       <ModeProvider>
-        <StudiedTodayProvider>
+        <StudyHistoryProvider>
           <TimerProvider>
-            <PomodoroTimer />
+            <PomodoroTimer handleOpenHistory={handleOpenHistory} />
           </TimerProvider>
-        </StudiedTodayProvider>
+          {isHisotryOpen ? <HistoryModal handleCloseHistory={handleCloseHistory} /> : null}
+        </StudyHistoryProvider>
       </ModeProvider>
       {isSettingsOpen ? <SettingsModal /> : null}
     </ThemeProvider>

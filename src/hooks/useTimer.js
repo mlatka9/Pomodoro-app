@@ -3,14 +3,14 @@ import useGlobalSettings from './useGlobalSettings';
 import RingSound from 'assets/sounds/ring-sound.wav';
 import { formatTimer } from 'helpers';
 import useMode from './useMode';
-import useTimeStudiedToday from './useStudiedToday';
+import useStudyHistory from './useStudyHistory';
 
 const TimerContext = React.createContext();
 
 export const TimerProvider = ({ children }) => {
   const { globalSettings } = useGlobalSettings();
   const { mode } = useMode();
-  const { updateTimeStudiedToday, studiedTodayCounter } = useTimeStudiedToday();
+  const { updateTimeStudied } = useStudyHistory();
   const baseTimeInSeconds = mode === 'freeLearning' ? 0 : globalSettings.timerBase[mode] * 60;
   const timerWorker = useRef();
   // const renerCounter = useRef(0);
@@ -68,11 +68,11 @@ export const TimerProvider = ({ children }) => {
         setTimerState('finished');
         document.title = 'Session end';
         if (mode === 'pomodoro') {
-          updateTimeStudiedToday(baseTimeInSeconds);
+          updateTimeStudied(baseTimeInSeconds);
         }
       }
     }
-  }, [timer, studiedTodayCounter.date, timerState, mode, baseTimeInSeconds, updateTimeStudiedToday]);
+  }, [timer, timerState, mode, baseTimeInSeconds, updateTimeStudied]);
 
   const handleToggleTimer = () => {
     if (timerState === 'idle' || timerState === 'paused') {
@@ -83,7 +83,7 @@ export const TimerProvider = ({ children }) => {
   };
 
   const handleEndSession = () => {
-    updateTimeStudiedToday(timer);
+    updateTimeStudied(timer);
     setTimerState('idle');
   };
 

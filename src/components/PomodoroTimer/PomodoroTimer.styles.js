@@ -14,16 +14,6 @@ export const Wrapper = styled.div`
       margin: 30px 0;
     }
   }
-  h2 {
-    font-family: ${({ theme }) => theme.fonts.mainFont};
-    font-size: 16px;
-    letter-spacing: 1px;
-    opacity: 0.8;
-    font-weight: bold;
-    color: ${({ theme }) => theme.colors.grey};
-    margin-bottom: 40px;
-    text-align: center;
-  }
 `;
 
 export const SettingsButton = styled.button`
@@ -116,5 +106,41 @@ export const TimerInner = styled.div`
     font-size: 12px;
     opacity: 0.8;
     letter-spacing: 10px;
+  }
+`;
+
+export const StatsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  h2 {
+    font-family: ${({ theme }) => theme.fonts.mainFont};
+    font-size: 16px;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    font-weight: bold;
+    color: ${({ theme }) => theme.colors.grey};
+
+    text-align: center;
+  }
+  button {
+    height: 35px;
+    width: 35px;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+    z-index: 100;
+    opacity: 0.6;
+    transition: opacity 100ms ease-in-out, transform 150ms ease-in-out;
+    margin-left: 15px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    &:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
   }
 `;
