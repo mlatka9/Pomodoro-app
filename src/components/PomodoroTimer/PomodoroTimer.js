@@ -10,11 +10,12 @@ import useTimer from 'hooks/useTimer';
 import useMode from 'hooks/useMode';
 import useTimeStudiedToday from 'hooks/useStudiedToday';
 
+const calculatePercentagePorgress = (leftTime, allTime) => (leftTime / allTime) * 100;
+
 const PomodoroTimer = () => {
   const { setIsSettingsOpen } = useGlobalSettings();
   const { studiedTodayCounter } = useTimeStudiedToday();
-  const { timer, timerState, handleToggleTimer, handleResetTimer, handleEndSession, sessionPassedPercentage } =
-    useTimer();
+  const { timer, timerState, handleToggleTimer, handleResetTimer, handleEndSession, baseTimeInSeconds } = useTimer();
   const { mode } = useMode();
 
   const getMainButtonText = () => {
@@ -41,7 +42,7 @@ const PomodoroTimer = () => {
             ) : null}
           </TimerInner>
         </TimerBorder>
-        <ProgressBar progress={sessionPassedPercentage} />
+        <ProgressBar progress={mode === 'freeLearning' ? 100 : calculatePercentagePorgress(timer, baseTimeInSeconds)} />
       </TimerWrapper>
       <SettingsButton onClick={() => setIsSettingsOpen(true)}>
         <img src={SettingsIcon} alt="settings" />

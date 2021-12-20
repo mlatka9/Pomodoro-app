@@ -1,27 +1,21 @@
 import { Wrapper, SwitchOption } from './SwitchBar.styles';
-import useMode, { ModeType } from 'hooks/useMode';
+import useMode from 'hooks/useMode';
 import React from 'react';
 
 const SwitchBar = React.memo(() => {
   const { mode, handleChangeMode } = useMode();
   return (
     <Wrapper mode={mode}>
-      <SwitchOption isSelectedMode={mode === ModeType.POMODORO} onClick={() => handleChangeMode(ModeType.POMODORO)}>
+      <SwitchOption isSelectedMode={mode === 'pomodoro'} onClick={() => handleChangeMode('pomodoro')}>
         pomodoro
       </SwitchOption>
-      <SwitchOption
-        isSelectedMode={mode === ModeType.FREE_LEARNING}
-        onClick={() => handleChangeMode(ModeType.FREE_LEARNING)}
-      >
+      <SwitchOption isSelectedMode={mode === 'freeLearning'} onClick={() => handleChangeMode('freeLearning')}>
         Free learning
       </SwitchOption>
-      <SwitchOption
-        isSelectedMode={mode === ModeType.SHORT_BREAK}
-        onClick={() => handleChangeMode(ModeType.SHORT_BREAK)}
-      >
+      <SwitchOption isSelectedMode={mode === 'shortBreak'} onClick={() => handleChangeMode('shortBreak')}>
         short break
       </SwitchOption>
-      <SwitchOption isSelectedMode={mode === ModeType.LONG_BREAK} onClick={() => handleChangeMode(ModeType.LONG_BREAK)}>
+      <SwitchOption isSelectedMode={mode === 'longBreak'} onClick={() => handleChangeMode('longBreak')}>
         long break
       </SwitchOption>
     </Wrapper>

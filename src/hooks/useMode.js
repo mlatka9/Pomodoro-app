@@ -2,15 +2,8 @@ import React, { useContext, useState } from 'react';
 
 const ModeContext = React.createContext();
 
-export const ModeType = {
-  POMODORO: 'pomodoro',
-  FREE_LEARNING: 'freeLearning',
-  SHORT_BREAK: 'shortBreak',
-  LONG_BREAK: 'longBreak',
-};
-
 export const ModeProvider = ({ children }) => {
-  const [mode, setMode] = useState(ModeType.POMODORO);
+  const [mode, setMode] = useState('pomodoro');
 
   const handleChangeMode = (mode) => {
     setMode(mode);

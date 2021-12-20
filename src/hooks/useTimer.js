@@ -7,47 +7,58 @@ import useTimeStudiedToday from './useStudiedToday';
 
 const TimerContext = React.createContext();
 
-const calculatePercentagePorgress = (leftTime, allTime) => {
-  return (leftTime / allTime) * 100;
-};
-
 export const TimerProvider = ({ children }) => {
   const { globalSettings } = useGlobalSettings();
   const { mode } = useMode();
-  const { updateTimeStudiedToday } = useTimeStudiedToday();
-  const baseTime = mode === 'freeLearning' ? 0 : globalSettings.timerBase[mode] * 60;
-  const [timerState, setTimerState] = useState('idle');
-  const [timer, setTimer] = useState(baseTime);
-  let intervalId = useRef();
+  const { updateTimeStudiedToday, studiedTodayCounter } = useTimeStudiedToday();
+  const baseTimeInSeconds = mode === 'freeLearning' ? 0 : globalSettings.timerBase[mode] * 60;
+  const timerWorker = useRef();
+  // const renerCounter = useRef(0);
 
-  const decrementTimer = () => setTimer((timer) => timer - 1);
-  const incrementTimer = () => setTimer((timer) => timer + 1);
+  // useEffect(() => {
+  //   renerCounter.current++;
+  //   console.log(renerCounter.current);
+  // });
+
+  const [timerState, setTimerState] = useState('idle');
+  const [timer, setTimer] = useState(baseTimeInSeconds);
 
   useEffect(() => {
-    setTimer(baseTime);
+    timerWorker.current = new Worker('timerWorker.js');
+    timerWorker.current.onmessage = function (e) {
+      // console.log('Message received from worker,', e.data);
+      setTimer(e.data);
+    };
+    return () => timerWorker.current.terminate();
+  }, []);
+
+  useEffect(() => {
     setTimerState('idle');
-  }, [mode, baseTime]);
+    timerWorker.current.postMessage({ action: 'setup', value: baseTimeInSeconds });
+    setTimer(baseTimeInSeconds); //to fix bug with switch bar before timer start
+  }, [mode, baseTimeInSeconds]);
 
   useEffect(() => {
     if (timerState === 'counting') {
       if (mode === 'freeLearning') {
-        intervalId.current = setInterval(incrementTimer, 1000);
+        timerWorker.current.postMessage({ action: 'start_incrementing' });
       } else {
-        intervalId.current = setInterval(decrementTimer, 1000);
+        timerWorker.current.postMessage({ action: 'start_decrementing' });
       }
     } else {
-      if (intervalId.current) {
-        clearInterval(intervalId.current);
+      if (timerWorker.current) {
+        timerWorker.current.postMessage({ action: 'cancel_timer' });
       }
     }
+
     return () => {
-      clearInterval(intervalId.current);
+      timerWorker.current.postMessage({ action: 'cancel_timer' });
     };
   }, [timerState, mode]);
 
   useEffect(() => {
     if (timerState === 'idle') {
-      setTimer(baseTime);
+      timerWorker.current.postMessage({ action: 'setup', value: baseTimeInSeconds });
       document.title = 'Pomodoro';
     } else if (timerState === 'counting') {
       document.title = formatTimer(timer);
@@ -57,11 +68,11 @@ export const TimerProvider = ({ children }) => {
         setTimerState('finished');
         document.title = 'Session end';
         if (mode === 'pomodoro') {
-          updateTimeStudiedToday(baseTime);
+          updateTimeStudiedToday(baseTimeInSeconds);
         }
       }
     }
-  }, [timer, timerState, mode, baseTime, updateTimeStudiedToday]);
+  }, [timer, studiedTodayCounter.date, timerState, mode, baseTimeInSeconds, updateTimeStudiedToday]);
 
   const handleToggleTimer = () => {
     if (timerState === 'idle' || timerState === 'paused') {
@@ -80,15 +91,13 @@ export const TimerProvider = ({ children }) => {
     setTimerState('idle');
   };
 
-  const sessionPassedPercentage = mode === 'freeLearning' ? 100 : calculatePercentagePorgress(timer, baseTime);
-
   const values = {
     timerState,
     timer,
     handleToggleTimer,
     handleResetTimer,
     handleEndSession,
-    sessionPassedPercentage,
+    baseTimeInSeconds,
   };
   return <TimerContext.Provider value={values}>{children}</TimerContext.Provider>;
 };
