@@ -67,10 +67,11 @@ const HistoryModal = ({ handleCloseHistory }) => {
     labels,
     datasets: [
       {
-        label: 'minutes',
-        data: charData.map((record) => Math.floor(isHourBased ? record.time / 3600 : record.time / 60)),
+        label: isHourBased ? 'hours' : 'minutes',
+        data: charData.map(
+          (record) => Math.floor(isHourBased ? (record.time / 3600) * 10 : (record.time / 60) * 10) / 10
+        ),
         backgroundColor: theme.colors.red,
-        pointHoverBackgroundColor: 'red',
         hoverBackgroundColor: theme.colors.lightRed,
       },
     ],
