@@ -7,22 +7,6 @@ import { useTheme } from 'styled-components';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export const options = {
-  scales: {
-    x: {
-      grid: {
-        display: false,
-      },
-    },
-  },
-  // responsive: true,
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-};
-
 const HistoryModal = ({ handleCloseHistory }) => {
   const { studyHistory } = useStudyHistory();
   const theme = useTheme();
@@ -45,14 +29,49 @@ const HistoryModal = ({ handleCloseHistory }) => {
   };
 
   const charData = prepareChartData();
+  const isHourBased = charData.reduce((max, record) => (record.time > max ? record.time : max), 0) >= 3600;
+
+  const options = {
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: isHourBased ? 'hours' : 'minutes',
+          // color: theme.colors.red,
+          font: { size: 16, family: theme.fonts.mainFont },
+        },
+        ticks: {
+          precision: 0.3,
+          // fixedStepSize: 1
+        },
+      },
+    },
+    animation: {
+      delay: 250, // change delay to suit your needs.
+    },
+    // responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
+
   const labels = charData.map((record) => record.date.split('-').slice(1).reverse().join('-'));
   const data = {
     labels,
     datasets: [
       {
         label: 'minutes',
-        data: charData.map((record) => Math.floor(record.time / 60)),
-        backgroundColor: theme.colors.lightRed,
+        data: charData.map((record) => Math.floor(isHourBased ? record.time / 3600 : record.time / 60)),
+        backgroundColor: theme.colors.red,
+        pointHoverBackgroundColor: 'red',
+        hoverBackgroundColor: theme.colors.lightRed,
       },
     ],
   };

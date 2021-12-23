@@ -26,7 +26,6 @@ export const TimerProvider = ({ children }) => {
   useEffect(() => {
     timerWorker.current = new Worker('timerWorker.js');
     timerWorker.current.onmessage = function (e) {
-      // console.log('Message received from worker,', e.data);
       setTimer(e.data);
     };
     return () => timerWorker.current.terminate();

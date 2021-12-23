@@ -90,10 +90,11 @@ export const ContentWrapper = styled.div`
     font-weight: bold;
     font-size: 13px;
     color: ${({ theme }) => theme.colors.black};
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     display: blok;
     margin-bottom: 40px;
+    text-align: center;
     span {
       color: ${({ theme }) => theme.colors.red};
     }

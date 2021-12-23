@@ -151,7 +151,7 @@ export const FontButton = styled.button`
       return 'normal';
     }
   }};
-  transition: box-shadow 100ms ease-in-out;
+  transition: box-shadow 200ms ease-in-out;
   &:hover {
     box-shadow: ${({ isSelected, theme }) =>
       isSelected
@@ -170,6 +170,14 @@ export const ColorButton = styled.button`
   background: ${({ isSelected }) => (isSelected ? `center url(${IconTik}) no-repeat` : 'none')};
   background-color: ${({ color }) => color};
   cursor: pointer;
+  transition: box-shadow 200ms ease-in-out;
+  &:hover {
+    box-shadow: ${({ isSelected, theme }) =>
+      isSelected
+        ? 'none'
+        : `inset 0px 0px 0px 1px ${theme.colors.lightGrey},
+         inset 0px 0px 0px 4px rgba(255, 255, 255, 1)`};
+  }
 `;
 
 export const OptionTitle = styled.span`
