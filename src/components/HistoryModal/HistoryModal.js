@@ -80,7 +80,7 @@ const HistoryModal = ({ handleCloseHistory }) => {
     const total = charData.reduce((sum, record) => record.time + sum, 0);
     if (total < 60) return `${total} seconds`;
     if (total < 3600) return `${Math.floor(total / 60)} minutes`;
-    return `${Math.floor(total / 3660)} hours`;
+    return `${Math.floor((total / 3600) * 10) / 10} hours`;
   };
 
   return (
