@@ -42,17 +42,15 @@ const HistoryModal = ({ handleCloseHistory }) => {
         title: {
           display: true,
           text: isHourBased ? 'hours' : 'minutes',
-          // color: theme.colors.red,
           font: { size: 16, family: theme.fonts.mainFont },
         },
         ticks: {
-          precision: 0.3,
-          // fixedStepSize: 1
+          maxTicksLimit: 5,
         },
       },
     },
     animation: {
-      delay: 250, // change delay to suit your needs.
+      delay: 250,
     },
     // responsive: true,
     plugins: {
