@@ -7,6 +7,21 @@ import { useTheme } from 'styled-components';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+const months = {
+  1: 'Jan',
+  2: 'Feb',
+  3: 'Mar',
+  4: 'Apr',
+  5: 'May',
+  6: 'Jun',
+  7: 'Jul',
+  8: 'Aug',
+  9: 'Sep',
+  10: 'Oct',
+  11: 'Nov',
+  12: 'Dec',
+};
+
 const HistoryModal = ({ handleCloseHistory }) => {
   const { studyHistory } = useStudyHistory();
   const theme = useTheme();
@@ -26,6 +41,11 @@ const HistoryModal = ({ handleCloseHistory }) => {
       todayDate.setDate(todayDate.getDate() - 1);
     }
     return data.reverse();
+  };
+
+  const getLabels = () => {
+    const records = charData.map((record) => record.date.split('-').slice(1));
+    return records.map((record) => `${record[1]} ${months[record[0]]}`);
   };
 
   const charData = prepareChartData();
@@ -50,7 +70,7 @@ const HistoryModal = ({ handleCloseHistory }) => {
       },
     },
     animation: {
-      delay: 250,
+      delay: 300,
     },
     // responsive: true,
     plugins: {
@@ -60,7 +80,7 @@ const HistoryModal = ({ handleCloseHistory }) => {
     },
   };
 
-  const labels = charData.map((record) => record.date.split('-').slice(1).reverse().join('-'));
+  const labels = getLabels();
   const data = {
     labels,
     datasets: [

@@ -209,7 +209,7 @@ export const ApplyButton = styled.button`
   font-size: 16px;
   color: ${({ theme }) => theme.colors.white};
   cursor: pointer;
-  transition: background-color 50ms ease-in-out;
+  transition: background-color 80ms ease-in-out;
   &:hover {
     background-color: ${({ theme }) => theme.colors.lightRed};
   }

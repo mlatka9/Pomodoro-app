@@ -18,7 +18,7 @@ export const theme = {
 const customColorsPalette = {
   red: {
     primary: '#F87070',
-    light: '#F87070',
+    light: '#ff9494',
   },
   aquamarine: {
     primary: '#70F3F8',
