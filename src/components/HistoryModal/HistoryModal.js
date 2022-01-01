@@ -8,18 +8,18 @@ import { useTheme } from 'styled-components';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const months = {
-  1: 'Jan',
-  2: 'Feb',
-  3: 'Mar',
-  4: 'Apr',
-  5: 'May',
-  6: 'Jun',
-  7: 'Jul',
-  8: 'Aug',
-  9: 'Sep',
-  10: 'Oct',
-  11: 'Nov',
-  12: 'Dec',
+  '01': 'Jan',
+  '02': 'Feb',
+  '03': 'Mar',
+  '04': 'Apr',
+  '05': 'May',
+  '06': 'Jun',
+  '07': 'Jul',
+  '08': 'Aug',
+  '09': 'Sep',
+  '10': 'Oct',
+  '11': 'Nov',
+  '12': 'Dec',
 };
 
 const HistoryModal = ({ handleCloseHistory }) => {
@@ -45,6 +45,7 @@ const HistoryModal = ({ handleCloseHistory }) => {
 
   const getLabels = () => {
     const records = charData.map((record) => record.date.split('-').slice(1));
+    console.log(records);
     return records.map((record) => `${record[1]} ${months[record[0]]}`);
   };
 
